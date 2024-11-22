@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "Generate Dataset",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nerf2d.create_dataset",
+            "args": [
+                "assets/dots.svg",
+                "assets/field.png",
+            ]
+        }
+    ]
+}

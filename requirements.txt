@@ -1,0 +1,10 @@
+beartype
+black
+einops
+jaxtyping
+numpy
+ruff
+torch
+torchaudio
+torchvision
+typer
