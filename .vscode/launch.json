@@ -7,7 +7,7 @@
             "module": "nerf2d.create_dataset",
             "args": [
                 "assets/dots.svg",
-                "assets/field.png",
+                "assets/flower.png",
             ]
         }
     ]
