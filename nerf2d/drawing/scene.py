@@ -28,7 +28,7 @@ def draw_scene(
     start = scene.endpoints[:, 0]
     end = scene.endpoints[:, 1]
     _, h, w = image.shape
-    world_to_pixel, _ = generate_conversions((h, w), device, (0, 1), (0, 1))
+    world_to_pixel, _ = generate_conversions((h, w), device, (-1, 1), (-1, 1))
     start = world_to_pixel(start)
     end = world_to_pixel(end)
 

@@ -32,7 +32,7 @@ def extract_scene(
     image = gaussian_blur(image, kernel_size)
     colors = grid_sample(
         image[None],
-        rearrange(endpoints, "l e xy -> () l e xy") * 2 - 1,
+        rearrange(endpoints, "l e xy -> () l e xy"),
         mode="bilinear",
         align_corners=False,
     )

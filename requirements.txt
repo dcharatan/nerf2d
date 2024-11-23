@@ -4,6 +4,7 @@ einops
 jaxtyping
 numpy
 ruff
+scipy
 torch
 torchaudio
 torchvision

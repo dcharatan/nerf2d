@@ -8,6 +8,7 @@
             "args": [
                 "assets/dots.svg",
                 "assets/flower.png",
+                "workspace",
             ]
         }
     ]

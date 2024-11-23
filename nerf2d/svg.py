@@ -12,7 +12,7 @@ def get_polygon_line_segments(
     path: Path,
     device: torch.device,
 ) -> Float[Tensor, "line endpoint 2"]:
-    """Return all normalized polygon line segment endpoints in an SVG."""
+    """Return all normalized (-1 to 1) polygon line segment endpoints in an SVG."""
     segments = []
 
     # Parse the SVG as XML.
@@ -39,4 +39,4 @@ def get_polygon_line_segments(
         polygon_segments = torch.stack((points[:-1], points[1:]), dim=1)
         segments.append(polygon_segments)
 
-    return (torch.cat(segments, dim=0) - xy) / wh
+    return (torch.cat(segments, dim=0) - xy) / wh * 2 - 1
