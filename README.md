@@ -1,5 +1,7 @@
 # nerf2d (Dataset Generation)
 
+![003](https://github.com/user-attachments/assets/c950beba-37d4-48ad-8a44-b15467e16686)
+
 _A script that generates toy NeRF datasets, except the world is 2D!_
 
 Compare this to regular NeRF datasets below:
