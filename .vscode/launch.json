@@ -10,6 +10,12 @@
                 "assets/flower.png",
                 "workspace",
             ]
+        },
+        {
+            "name": "Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "intersect",
         }
     ]
 }

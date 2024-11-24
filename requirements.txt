@@ -5,7 +5,9 @@ jaxtyping
 numpy
 ruff
 scipy
+sympy
 torch
 torchaudio
 torchvision
+tqdm
 typer

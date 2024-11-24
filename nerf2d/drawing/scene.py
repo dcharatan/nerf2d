@@ -1,5 +1,5 @@
 import torch
-from einops import einsum, repeat
+from einops import einsum
 from jaxtyping import Float
 from torch import Tensor
 
