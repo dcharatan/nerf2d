@@ -4,7 +4,7 @@
             "name": "Generate Dataset",
             "type": "debugpy",
             "request": "launch",
-            "module": "nerf2d.create_dataset",
+            "module": "nerf2d",
             "args": [
                 "assets/dots.svg",
                 "assets/flower.png",

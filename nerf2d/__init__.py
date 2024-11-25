@@ -1,35 +1,43 @@
 from pathlib import Path
+from typing import TypedDict
 
 import numpy as np
 import torch
 from einops import repeat
-from jaxtyping import install_import_hook
+from jaxtyping import Float
 from tqdm import tqdm
 
-with install_import_hook("nerf2d", "beartype.beartype"):
-    from nerf2d.drawing.cameras import draw_cameras
-    from nerf2d.drawing.scene import draw_scene
-    from nerf2d.geometry.projection import get_world_rays, sample_image_grid
-    from nerf2d.geometry.random_extrinsics import generate_random_extrinsics
-    from nerf2d.geometry.ray_tracing import intersect
-    from nerf2d.image_io import save_image
-    from nerf2d.scene_extraction import extract_scene
-    from nerf2d.visualization.layout import vcat
+from nerf2d.drawing.cameras import draw_cameras
+from nerf2d.drawing.scene import draw_scene
+from nerf2d.geometry.projection import get_world_rays, sample_image_grid
+from nerf2d.geometry.random_extrinsics import generate_random_extrinsics
+from nerf2d.geometry.ray_tracing import intersect
+from nerf2d.scene_extraction import extract_scene
+from nerf2d.visualization.layout import vcat
 
 
-def main(
+class DatasetSplit(TypedDict):
+    extrinsics: Float[np.ndarray, "_ 3 3"]
+    intrinsics: Float[np.ndarray, "_ 2 2"]
+    images: Float[np.ndarray, "_ 3 width"]
+    visualizations: Float[np.ndarray, "_ 3 vis_height vis_width"]
+
+
+class Dataset(TypedDict):
+    train: DatasetSplit
+    test: DatasetSplit
+
+
+def create_dataset(
     shape_path: Path,
     image_path: Path,
-    output_path: Path,
     num_train_views: int = 50,
     num_test_views: int = 20,
     kernel_size: int = 5,
     preview_resolution: int = 512,
     render_resolution: int = 256,
-) -> None:
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    output_path.mkdir(exist_ok=True, parents=True)
-
+    device: torch.device = torch.device("cpu"),
+) -> Dataset:
     # Extract the scene from the given shape (SVG file) and image.
     scene = extract_scene(shape_path, image_path, kernel_size, device)
 
@@ -37,8 +45,6 @@ def main(
     r = preview_resolution
     overview = torch.zeros((3, r, r), dtype=torch.float32, device=device)
     overview = draw_scene(overview, scene, 2)
-    save_image(overview, output_path / "scene.png")
-
     dataset = {}
 
     # Render images for the scene.
@@ -74,7 +80,6 @@ def main(
                 (overview_with_camera, rendered_vis), "center", color=1, border=16
             )
             visualizations.append(visualization)
-            save_image(visualization, output_path / tag / f"{index:0>3}.png")
         images = np.stack(images)
         visualizations = np.stack(visualizations)
 
@@ -85,10 +90,4 @@ def main(
             "intrinsics": intrinsics.cpu().numpy(),
         }
 
-    np.savez(output_path / "dataset", dataset=dataset)
-
-
-if __name__ == "__main__":
-    import typer
-
-    typer.run(main)
+    return dataset
