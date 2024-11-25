@@ -1,3 +1,32 @@
+[project]
+name = "nerf2d"
+version = "0.0.1"
+description = "2D NeRF toy dataset generation."
+readme = "README.md"
+requires-python =">=3.11"
+license = {file = "LICENSE"}
+authors = [
+  {name = "David Charatan", email = "charatan@mit.edu"},
+]
+keywords = ["nerf"]
+urls = {repository = "https://github.com/dcharatan/nerf2d" }
+dependencies = [
+  "einops",
+  "jaxtyping",
+  "numpy",
+  "scipy",
+  "torch",
+  "torchvision",
+  "tqdm",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = ["nerf2d/*"]
+
 [tool.ruff]
 # Enable Pyflakes `E` and `F` codes by default.
 select = ["E", "F", "I"]

@@ -2,7 +2,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import typer
 from einops import repeat
 from jaxtyping import install_import_hook
 from tqdm import tqdm
@@ -90,4 +89,6 @@ def main(
 
 
 if __name__ == "__main__":
+    import typer
+
     typer.run(main)
