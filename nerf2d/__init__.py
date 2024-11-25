@@ -37,7 +37,10 @@ def create_dataset(
     preview_resolution: int = 512,
     render_resolution: int = 256,
     device: torch.device = torch.device("cpu"),
+    seed: int = 0,
 ) -> Dataset:
+    generator = np.random.default_rng(seed)
+
     # Extract the scene from the given shape (SVG file) and image.
     scene = extract_scene(shape_path, image_path, kernel_size, device)
 
@@ -51,7 +54,7 @@ def create_dataset(
     background = torch.zeros((3,), dtype=torch.float32, device=device)
     for tag, num_images in (("train", num_train_views), ("test", num_test_views)):
         # Sample camera parameters.
-        extrinsics = generate_random_extrinsics(num_images, 2, 0.9)
+        extrinsics = generate_random_extrinsics(num_images, 2, 0.9, generator=generator)
         intrinsics = torch.eye(2, dtype=torch.float32)
         intrinsics = repeat(intrinsics, "i j -> n i j", n=num_images).clone()
         intrinsics[:, :-1, -1] = 0.5

@@ -19,6 +19,7 @@ def main(
     kernel_size: int = 5,
     preview_resolution: int = 512,
     render_resolution: int = 256,
+    seed: int = 0,
 ) -> None:
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -31,6 +32,7 @@ def main(
         preview_resolution=preview_resolution,
         render_resolution=render_resolution,
         device=device,
+        seed=seed,
     )
 
     for tag, split in dataset.items():
