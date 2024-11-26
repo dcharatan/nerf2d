@@ -35,8 +35,10 @@ def main(
         seed=seed,
     )
 
-    for tag, split in dataset.items():
-        for index, visualization in enumerate(split["visualizations"]):
+    save_image(dataset["overview"], output_path / "overview.png")
+    save_image(dataset["occupancy"], output_path / "occupancy.png")
+    for tag in ("train", "test"):
+        for index, visualization in enumerate(dataset[tag]["visualizations"]):
             save_image(visualization, output_path / tag / f"{index:0>3}.png")
 
     np.savez(output_path / "dataset", dataset=dataset)

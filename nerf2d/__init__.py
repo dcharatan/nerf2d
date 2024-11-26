@@ -4,14 +4,14 @@ from typing import TypedDict
 import numpy as np
 import torch
 from einops import repeat
-from jaxtyping import Float
+from jaxtyping import Bool, Float
 from tqdm import tqdm
 
 from nerf2d.drawing.cameras import draw_cameras
 from nerf2d.drawing.scene import draw_scene
 from nerf2d.geometry.projection import get_world_rays, sample_image_grid
 from nerf2d.geometry.random_extrinsics import generate_random_extrinsics
-from nerf2d.geometry.ray_tracing import intersect
+from nerf2d.geometry.ray_tracing import intersect, render_occupancy
 from nerf2d.scene_extraction import extract_scene
 from nerf2d.visualization.layout import vcat
 
@@ -19,13 +19,15 @@ from nerf2d.visualization.layout import vcat
 class DatasetSplit(TypedDict):
     extrinsics: Float[np.ndarray, "_ 3 3"]
     intrinsics: Float[np.ndarray, "_ 2 2"]
-    images: Float[np.ndarray, "_ 3 width"]
+    images: Float[np.ndarray, "_ 3 render_width"]
     visualizations: Float[np.ndarray, "_ 3 vis_height vis_width"]
 
 
 class Dataset(TypedDict):
     train: DatasetSplit
     test: DatasetSplit
+    overview: Float[np.ndarray, "3 preview_height preview_width"]
+    occupancy: Bool[np.ndarray, "preview_height preview_width"]
 
 
 def create_dataset(
@@ -92,5 +94,9 @@ def create_dataset(
             "extrinsics": extrinsics.cpu().numpy(),
             "intrinsics": intrinsics.cpu().numpy(),
         }
+
+    occupancy = render_occupancy(scene, resolution=preview_resolution)
+    dataset["occupancy"] = occupancy.cpu().numpy()
+    dataset["overview"] = overview.cpu().numpy()
 
     return dataset
