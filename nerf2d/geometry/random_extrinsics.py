@@ -13,15 +13,21 @@ def generate_random_extrinsics(
     dimensionality: int,
     radius: float,
     generator: Optional[np.random.Generator] = None,
+    device: torch.device = torch.device("cpu"),
 ) -> Float[Tensor, "number dim_homogeneous dim_homogeneous"]:
     d = dimensionality
     rotation = [
-        torch.tensor(so_group.rvs(d, random_state=generator), dtype=torch.float32)
+        torch.tensor(
+            so_group.rvs(d, random_state=generator),
+            dtype=torch.float32,
+            device=device,
+        )
         for _ in range(n)
     ]
     rotation = torch.stack(rotation)
     translation = -radius * rotation[:, :, -1]
-    extrinsics = repeat(torch.eye(d + 1, dtype=torch.float32), "i j -> n i j", n=n)
+    eye = torch.eye(d + 1, dtype=torch.float32, device=device)
+    extrinsics = repeat(eye, "i j -> n i j", n=n)
     extrinsics = extrinsics.clone()
     extrinsics[:, :-1, :-1] = rotation
     extrinsics[:, :-1, -1] = translation

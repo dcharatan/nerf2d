@@ -56,8 +56,14 @@ def create_dataset(
     background = torch.zeros((3,), dtype=torch.float32, device=device)
     for tag, num_images in (("train", num_train_views), ("test", num_test_views)):
         # Sample camera parameters.
-        extrinsics = generate_random_extrinsics(num_images, 2, 0.9, generator=generator)
-        intrinsics = torch.eye(2, dtype=torch.float32)
+        extrinsics = generate_random_extrinsics(
+            num_images,
+            2,
+            0.9,
+            generator=generator,
+            device=device,
+        )
+        intrinsics = torch.eye(2, dtype=torch.float32, device=device)
         intrinsics = repeat(intrinsics, "i j -> n i j", n=num_images).clone()
         intrinsics[:, :-1, -1] = 0.5
         intrinsics[:, :-1, :-1] = 0.75
@@ -69,7 +75,7 @@ def create_dataset(
         # Render from the camera parameters.
         images = []
         visualizations = []
-        for index, (c2w, k) in enumerate(zip(tqdm(extrinsics, desc=tag), intrinsics)):
+        for c2w, k in zip(tqdm(extrinsics, desc=tag), intrinsics):
             # Render.
             x, _ = sample_image_grid((render_resolution,), device)
             origins, directions = get_world_rays(x, c2w, k)
